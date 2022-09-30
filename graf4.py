@@ -1,0 +1,51 @@
+import numpy as np
+import math
+from matplotlib import pyplot as plt
+
+x = np.arange(0, 15, .00001)
+xx = np.arange(0, 16, 1)
+test1 = np.array([185, 161, 138, 118, 99, 85, 70, 59, 52, 51, 44, 39, 36, 31, 26, 21], float)
+test2 = np.array([185, 160, 134, 113, 88, 78, 66, 53, 43, 34, 30, 25, 21, 18, 14, 13], float)
+test3 = np.array([test1[i] + test2[i] for i in range(16)], float)
+ext1 = np.array([382, 324, 276, 234, 193, 167, 148, 123, 108, 94, 79, 72, 58, 47, 37, 30], float)
+ext2 = np.array([378, 320, 267, 219, 195, 176, 159, 137, 121, 112, 95, 82, 72, 60, 48, 44], float)
+ext3 = np.array([382, 335, 282, 240, 203, 181, 159, 138, 125, 106, 97, 79, 64, 53, 43, 36], float)
+tot = np.array([test3[i] + ext1[i] + ext2[i] + ext3[i] for i in range(16)], float)
+n0 = tot[0]
+print(n0)
+
+
+def f(x):
+    return n0 * np.exp(-0.1823 * x)
+
+
+def g(x, k):
+    return n0 * np.exp(-k * x)
+
+
+def exp(k, pts):
+    return [n0 * math.exp(-k * i) for i in pts]
+
+
+a = 0.01
+b = .5
+min_norm = 10000
+c = 10000
+step = 1.e-5
+while a < b:
+    if np.linalg.norm(tot - exp(a, xx)) < min_norm:
+        min_norm = np.linalg.norm(tot - exp(a, xx))
+        c = a
+    a += step
+print(c)
+
+plt.plot(x, f(x), zorder=2, label='Decaimento Radioativo', c='blue')
+plt.plot(x, g(x, c), zorder=2, label='Exponencial Ajustada', c='green')
+plt.scatter(list(range(16)), tot, c='red', s=15, zorder=3, label='Número de Dados')
+plt.legend()
+plt.grid()
+plt.xlabel('Geração')
+plt.ylabel('Quantidade')
+plt.axhline(linewidth=2, color="k")
+plt.axvline(linewidth=2, color="k")
+plt.show()
